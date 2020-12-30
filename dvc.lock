@@ -1,0 +1,7 @@
+extract:
+  cmd: python3 src/extract.py
+  outs:
+  - path: data/extract
+    md5: a59518ccf144db08fc0e0d0756d2cbaa.dir
+    size: 586
+    nfiles: 1

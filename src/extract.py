@@ -16,6 +16,7 @@ import requests
 from dotenv import load_dotenv
 import os
 import io
+import json
 
 load_dotenv()
 
@@ -31,7 +32,6 @@ def do_get(relative_url, *, params={}, headers={}):
     '''
     Executes an HTTP GET against the given resource.  The request is authorized using the given URL key.
     '''
-    import json
 
     params['key'] = API_KEY
 
@@ -55,7 +55,7 @@ def do_get(relative_url, *, params={}, headers={}):
     response.raise_for_status()
 
     if len(content_str) > 0:
-        return json.loads(content_str)
+        return content_str
 
     return None
 
@@ -64,15 +64,13 @@ def get_devices(id: str):
     return do_get("/devices/" + id + "/top")
 
 
-def summarize_devices(id: str):
+def extract(id: str, fd_out):
     '''
     Prints top from /devices/
     '''
     devices = get_devices(id)
 
-    for row in devices['data']:
-        print("param: {}".format(row['param']))
-    return
+    json.dump(devices, fd_out, ensure_ascii=False, indent=4)
 
 
 def check_available(name):
@@ -96,4 +94,9 @@ if __name__ == "__main__":
     check_available("requests")
     from datetime import datetime, timezone
 
-    summarize_devices("dd176486-7e5d-4c47-889b-6bfa0c588a65")
+    output = os.path.join('data', 'extract', 'devices.json')
+
+    os.makedirs(os.path.join('data', 'extract'), exist_ok=True)
+
+    with io.open(output, 'w', encoding='utf8') as fd_out:
+        extract("dd176486-7e5d-4c47-889b-6bfa0c588a65", fd_out)
