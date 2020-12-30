@@ -15,6 +15,7 @@ import sys
 import requests
 from dotenv import load_dotenv
 import os
+import io
 
 load_dotenv()
 
@@ -59,70 +60,19 @@ def do_get(relative_url, *, params={}, headers={}):
     return None
 
 
-def get_laser_egg(id: str):
-    return do_get("/lasereggs/" + id)
+def get_devices(id: str):
+    return do_get("/devices/" + id + "/top")
 
 
-def get_sensedge(id: str):
-    return do_get("/sensedges/" + id)
-
-
-def summarize_laser_egg(id: str):
+def summarize_devices(id: str):
     '''
-    Prints the most recently reported reading from a Laser Egg.
+    Prints top from /devices/
     '''
-    data = get_laser_egg(id)
+    devices = get_devices(id)
 
-    latest_data = data.get('info.aqi')
-    if latest_data:
-        print("Laser Egg data returned:")
-
-        ts = parse_rfc3339_utc(latest_data['ts'])
-        ts_ago = (datetime.now(timezone.utc) - ts).total_seconds()
-        print("  Updated: {} seconds ago".format(int(ts_ago)))
-
-        pm25 = latest_data['data'].get('pm25')
-        if pm25:
-            print("  PM2.5:   {} µg/m³".format(pm25))
-        else:
-            print("  PM2.5:   no data")
-
-    else:
-        print("Laser Egg hasn't uploaded any data yet")
-
-    print()
-
-
-def summarize_sensedge(id: str):
-    '''
-    Prints the most recently reported reading from a Sensedge.
-    '''
-    data = get_sensedge(id)
-
-    latest_data = data.get('latest')
-    if latest_data:
-        print("Sensedge data returned:")
-
-        ts = parse_rfc3339_utc(latest_data['ts'])
-        ts_ago = (datetime.now(timezone.utc) - ts).total_seconds()
-        print("  Updated: {} seconds ago".format(int(ts_ago)))
-
-        pm25 = latest_data.get('km100.rpm25c')
-        if pm25:
-            print("  PM2.5:   {} µg/m³".format(pm25))
-        else:
-            print("  PM2.5:   no data")
-
-        tvoc = latest_data.get('km102.rtvoc (ppb)')
-        if tvoc:
-            print("  TVOC:    {} ppb".format(tvoc))
-        else:
-            print("  TVOC:    no data")
-
-    else:
-        print("Sensedge hasn't uploaded any data yet")
-
-    print()
+    for row in devices['data']:
+        print("param: {}".format(row['param']))
+    return
 
 
 def check_available(name):
@@ -146,5 +96,4 @@ if __name__ == "__main__":
     check_available("requests")
     from datetime import datetime, timezone
 
-    summarize_laser_egg("00000000-0001-0001-0000-00007e57c0de")
-    summarize_sensedge("00000000-0031-0001-0000-00007e57c0de")
+    summarize_devices("dd176486-7e5d-4c47-889b-6bfa0c588a65")
