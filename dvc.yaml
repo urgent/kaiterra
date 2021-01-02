@@ -3,3 +3,5 @@ stages:
     cmd: python3 src/extract.py
     outs:
     - data/extract
+  transform:
+    cmd: python3 src/transform.py
