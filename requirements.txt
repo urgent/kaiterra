@@ -1,3 +1,5 @@
 requests
 python-dotenv
 dvc
+mysqlclient
+PyMySQL
