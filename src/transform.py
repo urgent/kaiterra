@@ -48,6 +48,8 @@ class Log(Base):
         self = data
 
 
+print('Running transform')
+
 with open('./data/extract/devices.json') as json_file:
     # create a configured "Session" class
     Session = sessionmaker(bind=engine)
