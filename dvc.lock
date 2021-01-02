@@ -2,8 +2,8 @@ extract:
   cmd: python3 src/extract.py
   outs:
   - path: data/extract
-    md5: 790fb7448d0b09a123d578fc2a25efd5.dir
-    size: 585
+    md5: fddd4648536e50dcc67285247b554cd5.dir
+    size: 1327
     nfiles: 1
 transform:
   cmd: python3 src/transform.py

@@ -55,7 +55,7 @@ def do_get(relative_url, *, params={}, headers={}):
     response.raise_for_status()
 
     if len(content_str) > 0:
-        return content_str
+        return json.loads(content_str)
 
     return None
 
