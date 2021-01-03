@@ -6,6 +6,8 @@ from sqlalchemy.types import TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+load_dotenv()
+
 Base = declarative_base()
 
 MYSQL_USER = os.getenv("MYSQL_USER")
@@ -86,3 +88,5 @@ with open('./data/extract/devices.json') as json_file:
             row['rtemp_value'] = p['points'][0]['value']
             row['rtemp_timestamp'] = p['points'][0]['ts']
     session.add(Log(row))
+    session.commit()
+    session.close()
