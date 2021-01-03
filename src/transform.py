@@ -18,8 +18,6 @@ MYSQL_DB = os.getenv("MYSQL_DB")
 engine = create_engine(
     "mysql://{}:{}@{}/{}".format(MYSQL_USER, MYSQL_PASS, MYSQL_HOST, MYSQL_DB))
 
-Base.metadata.create_all(engine)
-
 
 class Log(Base):
     __tablename__ = 'log'
@@ -48,11 +46,12 @@ class Log(Base):
     updated_time = Column(TIMESTAMP, nullable=False, server_default=text(
         'CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP'))
 
-    def __init__(self, data):
-        self = data
-
 
 print('Running transform')
+
+Base.metadata.create_all(engine, tables=[Log.__table__])
+
+log = Log()
 
 with open('./data/extract/devices.json') as json_file:
     # create a configured "Session" class
@@ -62,33 +61,32 @@ with open('./data/extract/devices.json') as json_file:
     session = Session()
 
     data = json.load(json_file)
-    row = {}
     for p in data['data']:
         if p['param'] == 'rc02':
-            row['rco2_units'] = p['units']
-            row['rco2_span'] = p['span']
-            row['rco2_value'] = p['points'][0]['value']
-            row['rco2_timestamp'] = p['points'][0]['ts']
+            log.rco2_units = p['units']
+            log.rco2_span = p['span']
+            log.rco2_value = p['points'][0]['value']
+            log.rco2_timestamp = p['points'][0]['ts']
         elif p['param'] == 'rhumid':
-            row['rhumid_units'] = p['units']
-            row['rhumid_span'] = p['span']
-            row['rhumid_value'] = p['points'][0]['value']
-            row['rhumid_timestamp'] = p['points'][0]['ts']
+            log.rhumid_units = p['units']
+            log.rhumid_span = p['span']
+            log.rhumid_value = p['points'][0]['value']
+            log.rhumid_timestamp = p['points'][0]['ts']
         elif p['param'] == 'rpm10c':
-            row['rpm10c_units'] = p['units']
-            row['rpm10c_span'] = p['span']
-            row['rpm10c_value'] = p['points'][0]['value']
-            row['rpm10c_timestamp'] = p['points'][0]['ts']
+            log.rpm10c_units = p['units']
+            log.rpm10c_span = p['span']
+            log.rpm10c_value = p['points'][0]['value']
+            log.rpm10c_timestamp = p['points'][0]['ts']
         elif p['param'] == 'rpm25c':
-            row['rpm25c_units'] = p['units']
-            row['rpm25c_span'] = p['span']
-            row['rpm25c_value'] = p['points'][0]['value']
-            row['rpm25c_timestamp'] = p['points'][0]['ts']
+            log.rpm25c_units = p['units']
+            log.rpm25c_span = p['span']
+            log.rpm25c_value = p['points'][0]['value']
+            log.rpm25c_timestamp = p['points'][0]['ts']
         elif p['param'] == 'rtemp':
-            row['rtemp_units'] = p['units']
-            row['rtemp_span'] = p['span']
-            row['rtemp_value'] = p['points'][0]['value']
-            row['rtemp_timestamp'] = p['points'][0]['ts']
-    session.add(Log(row))
+            log.rtemp_units = p['units']
+            log.rtemp_span = p['span']
+            log.rtemp_value = p['points'][0]['value']
+            log.rtemp_timestamp = p['points'][0]['ts']
+    session.add(log)
     session.commit()
     session.close()
