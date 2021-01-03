@@ -5,6 +5,7 @@ from sqlalchemy import Column, String, Integer, Numeric, text, func, create_engi
 from sqlalchemy.types import TIMESTAMP
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+import datetime
 
 load_dotenv()
 
@@ -62,31 +63,37 @@ with open('./data/extract/devices.json') as json_file:
 
     data = json.load(json_file)
     for p in data['data']:
-        if p['param'] == 'rc02':
+        if p['param'] == 'rco2':
             log.rco2_units = p['units']
             log.rco2_span = p['span']
             log.rco2_value = p['points'][0]['value']
-            log.rco2_timestamp = p['points'][0]['ts']
+            # "2020-12-31T04:24:56Z"
+            log.rco2_timestamp = datetime.datetime.strptime(
+                p['points'][0]['ts'], '%Y-%m-%dT%H:%M:%SZ')
         elif p['param'] == 'rhumid':
             log.rhumid_units = p['units']
             log.rhumid_span = p['span']
             log.rhumid_value = p['points'][0]['value']
-            log.rhumid_timestamp = p['points'][0]['ts']
+            log.rhumid_timestamp = datetime.datetime.strptime(
+                p['points'][0]['ts'], '%Y-%m-%dT%H:%M:%SZ')
         elif p['param'] == 'rpm10c':
             log.rpm10c_units = p['units']
             log.rpm10c_span = p['span']
             log.rpm10c_value = p['points'][0]['value']
-            log.rpm10c_timestamp = p['points'][0]['ts']
+            log.rpm10c_timestamp = datetime.datetime.strptime(
+                p['points'][0]['ts'], '%Y-%m-%dT%H:%M:%SZ')
         elif p['param'] == 'rpm25c':
             log.rpm25c_units = p['units']
             log.rpm25c_span = p['span']
             log.rpm25c_value = p['points'][0]['value']
-            log.rpm25c_timestamp = p['points'][0]['ts']
+            log.rpm25c_timestamp = datetime.datetime.strptime(
+                p['points'][0]['ts'], '%Y-%m-%dT%H:%M:%SZ')
         elif p['param'] == 'rtemp':
             log.rtemp_units = p['units']
             log.rtemp_span = p['span']
             log.rtemp_value = p['points'][0]['value']
-            log.rtemp_timestamp = p['points'][0]['ts']
+            log.rtemp_timestamp = datetime.datetime.strptime(
+                p['points'][0]['ts'], '%Y-%m-%dT%H:%M:%SZ')
     session.add(log)
     session.commit()
     session.close()
