@@ -18,6 +18,8 @@ MYSQL_DB = os.getenv("MYSQL_DB")
 engine = create_engine(
     "mysql://{}:{}@{}/{}".format(MYSQL_USER, MYSQL_PASS, MYSQL_HOST, MYSQL_DB))
 
+Base.metadata.create_all(engine)
+
 
 class Log(Base):
     __tablename__ = 'log'
